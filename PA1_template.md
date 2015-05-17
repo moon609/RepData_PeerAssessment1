@@ -45,33 +45,38 @@ act<-read.csv("activity.csv")
 
 
 ## What is mean total number of steps taken per day?
-### 1. Calculate the total number of steps taken per day and remove NAs
+### 1. Calculate the total number of steps taken per day
 
 ```r
 act2<-act%>%group_by(date)%>%summarise(TotalStep=sum(steps))
-rmna.act2<-act2[complete.cases(act2),]
-head(rmna.act2)     ##showing head of the mean table (NAs removed)
+act2
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [61 x 2]
 ## 
-##         date TotalStep
-## 1 2012-10-02       126
-## 2 2012-10-03     11352
-## 3 2012-10-04     12116
-## 4 2012-10-05     13294
-## 5 2012-10-06     15420
-## 6 2012-10-07     11015
+##          date TotalStep
+## 1  2012-10-01        NA
+## 2  2012-10-02       126
+## 3  2012-10-03     11352
+## 4  2012-10-04     12116
+## 5  2012-10-05     13294
+## 6  2012-10-06     15420
+## 7  2012-10-07     11015
+## 8  2012-10-08        NA
+## 9  2012-10-09     12811
+## 10 2012-10-10      9900
+## ..        ...       ...
 ```
 
 ### 2.Make a histogram of the total number of steps taken each day
 
 ```r
+rmna.act2<-act2[complete.cases(act2),]     ## remove NA rows
 hist(rmna.act2$TotalStep,main="Total number of steps taken per day",xlab="Sum of steps",breaks=20,col="Dark Red")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/histogram of mean steps each day-1.png) 
 
 ### 3. Calculate and report the mean and median of the total number of steps taken per day
 
@@ -97,7 +102,7 @@ meanact3$interval=strptime(meanact3$interval,"%H:%M")     ##convert character to
 plot(meanact3,type="l",xlab="Interval",ylab="Mean number of steps", main="Average Daily Activity Pattern",col="BLUE")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![](PA1_template_files/figure-html/time series plot of the 5-minute interval-1.png) 
 
 ### 2. The maximum number of steps of all 5-minute interval
 
@@ -106,7 +111,7 @@ meanact3$interval[meanact3$meanstep==max(meanact3$meanstep)]
 ```
 
 ```
-## [1] "2015-05-17 08:35:00 CST"
+## [1] "2015-05-18 08:35:00 CST"
 ```
 
 
@@ -130,7 +135,7 @@ fillna$meanstep=rep(meanact3$meanstep,61)     ##Add meanstep to table
 my.na<-is.na(fillna$steps)
 fillna$steps[my.na]<-fillna$meanstep[my.na]  ## fill NA with meanstep per day
 fillna$meanstep<-NULL  ## remove the column
-head(fillna)     ##showing the head of table (NA filled with the mean for that 5-minute interval)
+head(fillna)     ## Showing the head of table
 ```
 
 ```
@@ -143,14 +148,14 @@ head(fillna)     ##showing the head of table (NA filled with the mean for that 5
 ## 6 2.0943396 2012-10-01    00:25
 ```
 
-### 3. Make a histogram of the total number of steps taken each day
+### 3. Make a histogram of the total number of steps taken each day (NAs were filled with the mean steps of 5-min interval per day)
 
 ```r
 act4<-fillna%>%group_by(date)%>%summarise(TotalStep=sum(steps))
 hist(act4$TotalStep,main="Total number of steps taken per day",xlab="Sum of steps",breaks=20,col="Dark Red")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+![](PA1_template_files/figure-html/new histogram with NA filled-1.png) 
 
 ### 4. Calculate and report the mean and median total number of steps taken per day
 
@@ -202,4 +207,4 @@ plot(mwky,type="l",xlab="Interval",ylab="Mean number of steps", main="Averaged W
 plot(mwkd,type="l",xlab="Interval",ylab="Mean number of steps", main="Averaged Weekend Activity Pattern",col="Red")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
+![](PA1_template_files/figure-html/panel plot-1.png) 

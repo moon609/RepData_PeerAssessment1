@@ -26,15 +26,15 @@ act<-read.csv("activity.csv")
 
 
 ## What is mean total number of steps taken per day?
-### 1. Calculate the total number of steps taken per day and remove NAs
+### 1. Calculate the total number of steps taken per day
 ```{r}
 act2<-act%>%group_by(date)%>%summarise(TotalStep=sum(steps))
-rmna.act2<-act2[complete.cases(act2),]
-head(rmna.act2)     ##showing head of the mean table (NAs removed)
+act2
 ```
 
 ### 2.Make a histogram of the total number of steps taken each day
-```{r}
+```{r histogram of mean steps each day}
+rmna.act2<-act2[complete.cases(act2),]     ## remove NA rows
 hist(rmna.act2$TotalStep,main="Total number of steps taken per day",xlab="Sum of steps",breaks=20,col="Dark Red")
 ```
 
@@ -47,7 +47,7 @@ summary(act2$TotalStep)
 
 ## What is the average daily activity pattern?
 ### 1. Make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-```{r}
+```{r time series plot of the 5-minute interval}
 act3=mutate(act,interval=sprintf("%04d",interval)) ##make 5 to 0005
 act3$interval=paste(substr(act3$interval,1,2),substr(act3$interval,3,4), sep=":") ## make HHMM to HH:MM
 meanact3<-act3%>%group_by(interval)%>%summarise(meanstep=mean(steps,na.rm=TRUE))  ## calculate the mean
@@ -75,12 +75,12 @@ fillna$meanstep=rep(meanact3$meanstep,61)     ##Add meanstep to table
 my.na<-is.na(fillna$steps)
 fillna$steps[my.na]<-fillna$meanstep[my.na]  ## fill NA with meanstep per day
 fillna$meanstep<-NULL  ## remove the column
-head(fillna)     ##showing the head of table (NA filled with the mean for that 5-minute interval)
+head(fillna)     ## Showing the head of table
 
 ```
 
-### 3. Make a histogram of the total number of steps taken each day
-```{r}
+### 3. Make a histogram of the total number of steps taken each day (NAs were filled with the mean steps of 5-min interval per day)
+```{r new histogram with NA filled}
 act4<-fillna%>%group_by(date)%>%summarise(TotalStep=sum(steps))
 hist(act4$TotalStep,main="Total number of steps taken per day",xlab="Sum of steps",breaks=20,col="Dark Red")
 ```
@@ -105,7 +105,7 @@ head(act5)   ## Showing the head of table
 ```
 
 ### 2. Make a panel plot
-```{r}
+```{r panel plot}
 wky<-act5[act5$wday=="weekday",]
 wkd<-act5[act5$wday=="weekend",]
 mwky<-wky%>%group_by(interval)%>%summarise(meanstep=mean(steps))
