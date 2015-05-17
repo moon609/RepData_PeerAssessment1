@@ -127,7 +127,14 @@ sum(is.na(act$steps))
 ## [1] 2304
 ```
 
-### 2. Filling in all of the missing values in the dataset
+
+### 2. Strategy for imputing missing data
+0. Here, we use the mean for that 5 minute interval to impute missing data, so the total mean and median won't change
+1. Add a new column (calculated meanstep) to the table that had NAs 
+2. If the row have NA, it will find the "meanstep" in that interval and replace it.
+3. If the row DO NOT have NA, it will remain the original step.
+
+### 3. Filling in all of the missing values in the dataset
 
 ```r
 fillna<-act3
@@ -148,7 +155,7 @@ head(fillna)     ## Showing the head of table
 ## 6 2.0943396 2012-10-01    00:25
 ```
 
-### 3. Make a histogram of the total number of steps taken each day (NAs were filled with the mean steps of 5-min interval per day)
+### 4. Make a histogram of the total number of steps taken each day (AFTER missing values were imputed)
 
 ```r
 act4<-fillna%>%group_by(date)%>%summarise(TotalStep=sum(steps))
@@ -157,7 +164,7 @@ hist(act4$TotalStep,main="Total number of steps taken per day",xlab="Sum of step
 
 ![](PA1_template_files/figure-html/new histogram with NA filled-1.png) 
 
-### 4. Calculate and report the mean and median total number of steps taken per day
+### 5. Calculate and report the mean and median total number of steps taken per day
 
 ```r
 summary(act4$TotalStep)
